@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouter = void 0;
+const express_1 = require("express");
+const shared_1 = require("../../../shared");
+const dto_1 = require("../dto");
+const handlers_1 = require("../handlers");
+const userRouter = (0, express_1.Router)();
+exports.userRouter = userRouter;
+userRouter.post('/login', (0, shared_1.schemaValidator)(dto_1.loginUserSchema), handlers_1.UserHandler.login);
+userRouter.post('/register', (0, shared_1.schemaValidator)(dto_1.registerUserSchema), handlers_1.UserHandler.register);
+userRouter.use(shared_1.authenticateUser);
+userRouter.get('/', handlers_1.UserHandler.getUser);
+userRouter.get('/list', handlers_1.UserHandler.listAllUsers);

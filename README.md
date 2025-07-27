@@ -1,13 +1,15 @@
-# Anglara Task
+# Adda 247
 
-Welcome to the Anglara Task project! This is a Node.js application built with Express and TypeScript. This README will guide you through setting up and running the project, as well as provide examples of API responses.
+Welcome to the Adda 247 Scheduler Backend! This is a Node.js application built with Express and TypeScript. This README will guide you through setting up and running the project, as well as provide examples of API responses.
 
-## Deployment
+<!-- ## Deployment
+
 The project has been successfully deployed on Render. Please note that the deployment is done on a free instance, which means the initial request can take up to 50 seconds for the instance to boot up and start running.
-deployed url : https://anglara-task.onrender.com
+deployed url : https://anglara-task.onrender.com -->
 
 ## Postman Collection
-[Anglara Collection & Env](https://www.postman.com/telecoms-candidate-75479556/workspace/anglara/collection/28422425-abbaf6d4-d6e4-4e06-9315-f2579d62c2c1?action=share&creator=28422425&active-environment=28422425-06d94ac3-eb40-418f-8b94-e9f903911084)
+
+[Adda 247 API Collection](https://varuns-team.postman.co/workspace/Varun's-Team-Workspace~ea98c8e3-d699-442f-8220-5699167b76d9/collection/28422425-417c154c-ef62-4b2d-8169-74dd2031826d?action=share&creator=28422425)
 
 ## Table of Contents
 
@@ -32,7 +34,7 @@ Before you begin, ensure you have the following installed on your machine:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/Varun-18/anglara-task.git
+   git clone https://github.com/Varun-18/adda247.git
    cd anglara-task
    ```
 
@@ -109,7 +111,7 @@ Content-Type: application/json
 }
 ```
 
-### User Login
+<!-- ### User Login
 
 **Endpoint:** `POST /api/login`
 
@@ -129,7 +131,7 @@ Content-Type: application/json
 
 ```json
 {
-  "message": "Login successful",
+  "message": "Login successful"
 }
 ```
 
@@ -215,7 +217,7 @@ Here’s a summary of the main API endpoints available in the application:
 - **Delete Category:** `DELETE /category/:id`
 - **Update Category:** `PUT /category`
 - **Create Category:** `POST /category`
-- **Get Categories:** `GET /category`
+- **Get Categories:** `GET /category` -->
 
 ## Contributing
 
