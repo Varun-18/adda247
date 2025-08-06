@@ -3,6 +3,8 @@
   "buildCommand": "npm run build",
   "framework": null,
   "functions": {
-    "api/**/*.ts": {}
+    "api/**/*.ts": {
+      "maxDuration": 5
+    }
   }
 }
