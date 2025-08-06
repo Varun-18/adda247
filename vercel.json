@@ -8,8 +8,7 @@
   ],
   "functions": {
     "src/index.ts": {
-      "maxDuration": 30,
-      "runtime": "nodejs18.x"
+      "maxDuration": 30
     }
   },
   "installCommand": "npm install",
