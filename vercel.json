@@ -1,9 +1,1 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 5
-    }
-  }
-}
+{ "version": 2, "rewrites": [{ "source": "/(.*)", "destination": "/api" }] }

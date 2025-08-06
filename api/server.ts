@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -96,7 +96,9 @@ app.use(limiter);
  * Router for custom configurations
  */
 app.use('/', rootRouter);
-
+app.get('/', (req: Request, res: Response) => {
+  res.send('Success From Vercel');
+});
 const connectToDatabase = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI || '');
