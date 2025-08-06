@@ -10,7 +10,7 @@
     "paths": {
       "*": ["*"]
     },
-    "outDir": "./api",
+    "outDir": "api",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
