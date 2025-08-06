@@ -2,18 +2,19 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/index.ts",
+      "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["src/**/*"]
+        "includeFiles": ["api/**/*"]
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/index.ts"
+      "dest": "api/index.js"
     }
   ],
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "buildCommand": "npm run build"
 }
