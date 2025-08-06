@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "tsc && tsc-alias && npm run copyfiles",
+    "vercel-build": "tsc && tsc-alias && npm run copyfiles",
     "copyfiles": "copyfiles -O -u 1 src/views/**/* api",
     "lint": "prettier --write ./src &&  eslint ./src --fix",
     "start": "node api/index.js",
