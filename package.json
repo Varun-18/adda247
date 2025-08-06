@@ -7,9 +7,9 @@
     "dev": "nodemon",
     "build": "tsc && tsc-alias && npm run copyfiles",
     "vercel-build": "tsc && tsc-alias && npm run copyfiles",
-    "copyfiles": "copyfiles -O -u 1 src/views/**/* api",
-    "lint": "prettier --write ./src &&  eslint ./src --fix",
-    "start": "node api/index.js",
+    "copyfiles": "copyfiles -O -u 1 api/views/**/* dist",
+    "lint": "prettier --write ./api &&  eslint ./api --fix",
+    "start": "node dist/index.js",
     "test": "jest"
   },
   "keywords": [],
