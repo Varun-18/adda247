@@ -39,7 +39,7 @@ app.use(cookieParser());
  */
 app.use(
   cors({
-    origin: ['*'],
+    origin: ['http://localhost:3000', 'http://152.59.36.203:3000'],
     credentials: true,
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
     allowedHeaders:
