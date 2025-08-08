@@ -1,4 +1,0 @@
-name = "adda247-backend"
-main = "dist/index.js"  # your compiled JS entry
-compatibility_date = "2025-08-07"
-nodejs_compat = true

@@ -30,7 +30,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const token = sign(
-      { email: user.email },
+      { email: user.email, id: user.id },
       (process.env.JWT_SECRET || 'jwtsecret') as Secret,
       { expiresIn: process.env.JWT_EXPIRY || '1h' } as SignOptions
     );

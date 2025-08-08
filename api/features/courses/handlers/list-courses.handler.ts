@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 import { PaginatedResponse, ResponseHandler, STATUS_CODES } from 'shared';
 import { RESPONSE_MESSAGES } from '../constant';
-import { UserEntity } from '../entity';
-import { UserService } from '../services';
+import { CourseEntity } from '../entity';
+import { CourseService } from '../services';
 
-export const listAllUsers = async (req: Request, res: Response) => {
-  const userService = UserService();
+export const listAllCourses = async (req: Request, res: Response) => {
+  const courseService = CourseService();
   try {
-    const users = await userService.findAll();
+    const users = await courseService.findAll();
 
-    return ResponseHandler.success<PaginatedResponse<UserEntity>>(
+    return ResponseHandler.success<PaginatedResponse<CourseEntity>>(
       res,
       users,
-      RESPONSE_MESSAGES.USERS_RETRIEVED,
+      RESPONSE_MESSAGES.COURSES_RETRIEVED,
       STATUS_CODES.OK,
       true
     );
