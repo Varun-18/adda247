@@ -1,7 +1,14 @@
 import { Router } from 'express';
 import { authenticateUser, schemaValidator } from 'shared';
+import {
+  addTopicDto,
+  createCourseDto,
+  getCourseDto,
+  removeTopicDto,
+  updateCourseDto,
+  updateTopicDto,
+} from '../dto';
 import { CourseHandler } from '../handlers';
-import { createCourseDto, getCourseDto, updateCourseDto } from '../dto';
 
 const courseRouter = Router();
 
@@ -27,11 +34,19 @@ courseRouter.put(
   CourseHandler.updateCourseMetadata
 );
 
-// TODO : Add Schema Validators
-courseRouter.post('/course/:id', CourseHandler.addCourseTopic);
-courseRouter.put('/course/:id/topic/:topicId', CourseHandler.updateCourseTopic);
+courseRouter.post(
+  '/add-topic',
+  schemaValidator(addTopicDto),
+  CourseHandler.addCourseTopic
+);
+courseRouter.put(
+  '/update-topic',
+  schemaValidator(updateTopicDto),
+  CourseHandler.updateCourseTopic
+);
 courseRouter.delete(
-  '/course/:id/topic/:topicId',
+  '/:id/remove-topic/:topicId',
+  schemaValidator(removeTopicDto),
   CourseHandler.removeCourseTopic
 );
 

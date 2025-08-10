@@ -1,3 +1,6 @@
+export * from './add-topic.dto';
 export * from './create-course.dto';
 export * from './get-course-details.dto';
+export * from './remove-topic.dto';
 export * from './update-course.dto';
+export * from './update-topic.dto';

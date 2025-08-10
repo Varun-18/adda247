@@ -8,10 +8,10 @@ import { CourseService } from '../services';
 export const updateCourseTopic = async (req: AuthRequest, res: Response) => {
   const courseService = CourseService();
   try {
-    const { title, description, estimatedHours } = req.body;
+    const { courseId, topicId, title, description, estimatedHours } = req.body;
 
     const course = await courseService.findOne({
-      _id: new Types.ObjectId(req.params.id),
+      _id: new Types.ObjectId(courseId),
     });
 
     if (course === null) {
@@ -23,8 +23,8 @@ export const updateCourseTopic = async (req: AuthRequest, res: Response) => {
     }
 
     const updatedCourse = await courseService.updateTopic(
-      req.params.id,
-      req.params.topicId,
+      courseId,
+      topicId,
       title,
       description,
       estimatedHours
