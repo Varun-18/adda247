@@ -43,6 +43,7 @@ app.use(
       'http://localhost:5173',
       'http://152.59.36.203:3000',
       `${process.env.FRONTEND_URL}`,
+      `${process.env.KEEP_IT_URL}`,
     ],
     credentials: true,
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
