@@ -9,10 +9,17 @@ export interface CourseEntity extends BaseDocument {
     value: number;
     unit: 'days' | 'weeks' | 'months' | 'years';
   };
-  defaultTotalLectures: number;
-  topics: TopicEntity[];
+  subjects: SubjectEntity[];
   status: CourseStatus;
   createdBy: ObjectId;
+}
+
+export interface SubjectEntity {
+  _id: ObjectId;
+  title: string;
+  description?: string;
+  order: number;
+  topics: TopicEntity[];
 }
 
 export interface TopicEntity {
@@ -20,13 +27,12 @@ export interface TopicEntity {
   title: string;
   description?: string;
   order: number;
-  estimatedHours: number;
-  batchCompletions: TopicCompletionEntity[];
+  lectures: LectureEntity[];
 }
 
-export interface TopicCompletionEntity {
-  batch: ObjectId;
-  completedBy: ObjectId;
-  completedAt: Date;
-  notes?: string;
+export interface LectureEntity {
+  _id: ObjectId;
+  title: string;
+  description?: string;
+  order: number;
 }

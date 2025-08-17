@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import * as yup from 'yup';
 
-export const addTopicDto = yup.object({
+export const addSubjectDto = yup.object({
   body: yup.object({
     courseId: yup
       .string()
@@ -9,24 +9,16 @@ export const addTopicDto = yup.object({
       .test('is-objectid', 'Invalid MongoDB ObjectId', (value) =>
         Types.ObjectId.isValid(value)
       ),
-
-    subjectId: yup
-      .string()
-      .required('Subject ID is required')
-      .test('is-objectid', 'Invalid MongoDB ObjectId', (value) =>
-        Types.ObjectId.isValid(value)
-      ),
-
     title: yup
       .string()
-      .required('Topic title is required')
+      .required('Subject title is required')
       .trim()
-      .max(200, 'Topic title cannot exceed 200 characters'),
+      .max(200, 'Subject title cannot exceed 200 characters'),
 
     description: yup
       .string()
       .trim()
-      .max(500, 'Topic description cannot exceed 500 characters')
+      .max(500, 'Subject description cannot exceed 500 characters')
       .optional(),
 
     order: yup

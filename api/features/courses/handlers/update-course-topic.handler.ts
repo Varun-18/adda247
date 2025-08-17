@@ -8,34 +8,34 @@ import { CourseService } from '../services';
 export const updateCourseTopic = async (req: AuthRequest, res: Response) => {
   const courseService = CourseService();
   try {
-    const { courseId, topicId, title, description, estimatedHours } = req.body;
+    // const { courseId, topicId, title, description, estimatedHours } = req.body;
 
-    const course = await courseService.findOne({
-      _id: new Types.ObjectId(courseId),
-    });
+    // const course = await courseService.findOne({
+    //   _id: new Types.ObjectId(courseId),
+    // });
 
-    if (course === null) {
+    // if (course === null) {
       return ResponseHandler.error(
         res,
         RESPONSE_MESSAGES.COURSE_NOT_FOUND,
         STATUS_CODES.NOT_FOUND
       );
-    }
+    // }
 
-    const updatedCourse = await courseService.updateTopic(
-      courseId,
-      topicId,
-      title,
-      description,
-      estimatedHours
-    );
+    // const updatedCourse = await courseService.updateTopic(
+    //   courseId,
+    //   topicId,
+    //   title,
+    //   description,
+    //   estimatedHours
+    // );
 
-    return ResponseHandler.success(
-      res,
-      updatedCourse,
-      RESPONSE_MESSAGES.OPERATION_SUCCESSFUL,
-      STATUS_CODES.OK
-    );
+    // return ResponseHandler.success(
+    //   res,
+    //   updatedCourse,
+    //   RESPONSE_MESSAGES.OPERATION_SUCCESSFUL,
+    //   STATUS_CODES.OK
+    // );
   } catch (error) {
     console.error(error);
     return ResponseHandler.error(

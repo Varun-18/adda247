@@ -8,29 +8,29 @@ import { CourseService } from '../services';
 export const removeCourseTopic = async (req: AuthRequest, res: Response) => {
   const courseService = CourseService();
   try {
-    const course = await courseService.findOne({
-      _id: new Types.ObjectId(req.params.id),
-    });
+    // const course = await courseService.findOne({
+    //   _id: new Types.ObjectId(req.params.id),
+    // });
 
-    if (course === null) {
-      return ResponseHandler.error(
-        res,
-        RESPONSE_MESSAGES.COURSE_NOT_FOUND,
-        STATUS_CODES.NOT_FOUND
-      );
-    }
-
-    const updatedCourse = await courseService.removeTopic(
-      req.params.id,
-      req.params.topicId
-    );
-
-    return ResponseHandler.success(
+    // if (course === null) {
+    return ResponseHandler.error(
       res,
-      updatedCourse,
-      RESPONSE_MESSAGES.OPERATION_SUCCESSFUL,
-      STATUS_CODES.OK
+      RESPONSE_MESSAGES.COURSE_NOT_FOUND,
+      STATUS_CODES.NOT_FOUND
     );
+    // }
+
+    // const updatedCourse = await courseService.removeTopic(
+    //   req.params.id,
+    //   req.params.topicId
+    // );
+
+    // return ResponseHandler.success(
+    //   res,
+    //   updatedCourse,
+    //   RESPONSE_MESSAGES.OPERATION_SUCCESSFUL,
+    //   STATUS_CODES.OK
+    // );
   } catch (error) {
     console.error(error);
     return ResponseHandler.error(

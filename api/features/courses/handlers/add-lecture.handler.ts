@@ -5,10 +5,11 @@ import { ResponseHandler, STATUS_CODES } from 'shared';
 import { RESPONSE_MESSAGES } from '../constant';
 import { CourseService } from '../services';
 
-export const addCourseTopic = async (req: AuthRequest, res: Response) => {
+export const addLecture = async (req: AuthRequest, res: Response) => {
   const courseService = CourseService();
   try {
-    const { courseId, title, description, order, estimatedHours } = req.body;
+    const { courseId, subjectId, topicId, title, description, order } =
+      req.body;
 
     const course = await courseService.findOne({
       _id: new Types.ObjectId(courseId),
@@ -22,13 +23,14 @@ export const addCourseTopic = async (req: AuthRequest, res: Response) => {
       );
     }
 
-    const updatedCourse = await courseService.addTopic(
+    const updatedCourse = await courseService.addLecture({
       courseId,
+      subjectId,
+      topicId,
       title,
       description,
       order,
-      estimatedHours
-    );
+    });
 
     return ResponseHandler.success(
       res,

@@ -39,7 +39,7 @@ export class ResponseHandler {
     res
       .status(statusCode)
       .cookie(cookieName, cookieValue, cookieOptions)
-      .json(response);
+      .json({ ...response, token: cookieValue });
   }
 
   /**

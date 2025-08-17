@@ -1,3 +1,5 @@
+export * from './add-lecture.dto';
+export * from './add-subject.dto';
 export * from './add-topic.dto';
 export * from './create-course.dto';
 export * from './get-course-details.dto';

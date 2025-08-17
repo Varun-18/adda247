@@ -5,7 +5,92 @@ import { CourseEntity } from '../entity';
 const createCourseSchema = () => {
   const baseSchema = CreateBaseSchema();
 
-  const courseSchema = new Schema({
+  const lectureSchema = new Schema(
+    {
+      _id: {
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),
+      },
+      title: {
+        type: String,
+        required: [true, 'Lecture title is required'],
+        trim: true,
+        maxlength: [200, 'Lecture title cannot exceed 200 characters'],
+      },
+      description: {
+        type: String,
+        trim: true,
+        maxlength: [500, 'Lecture description cannot exceed 500 characters'],
+      },
+      order: {
+        type: Number,
+        required: true,
+        min: [1, 'Lecture order must be at least 1'],
+      },
+      durationMinutes: {
+        type: Number,
+        min: [1, 'Lecture duration must be at least 1 minute'],
+        default: 60,
+      },
+    },
+    { _id: false }
+  );
+
+  const topicSchema = new Schema(
+    {
+      _id: {
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),
+      },
+      title: {
+        type: String,
+        required: [true, 'Topic title is required'],
+        trim: true,
+        maxlength: [200, 'Topic title cannot exceed 200 characters'],
+      },
+      description: {
+        type: String,
+        trim: true,
+        maxlength: [500, 'Topic description cannot exceed 500 characters'],
+      },
+      order: {
+        type: Number,
+        required: true,
+        min: [1, 'Topic order must be at least 1'],
+      },
+      lectures: [lectureSchema],
+    },
+    { _id: false }
+  );
+
+  const subjectSchema = new Schema(
+    {
+      _id: {
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),
+      },
+      title: {
+        type: String,
+        required: [true, 'Subject title is required'],
+        trim: true,
+        maxlength: [200, 'Subject title cannot exceed 200 characters'],
+      },
+      description: {
+        type: String,
+        trim: true,
+        maxlength: [500, 'Subject description cannot exceed 500 characters'],
+      },
+      order: {
+        type: Number,
+        required: true,
+        min: [1, 'Subject order must be at least 1'],
+      },
+      topics: [topicSchema],
+    },
+    { _id: false }
+  );
+
+  const courseSchema = new Schema<CourseEntity>({
     ...baseSchema.obj,
 
     title: {
@@ -27,6 +112,7 @@ const createCourseSchema = () => {
       trim: true,
       uppercase: true,
       maxlength: [10, 'Course code cannot exceed 10 characters'],
+      unique: true,
     },
 
     duration: {
@@ -45,67 +131,7 @@ const createCourseSchema = () => {
       },
     },
 
-    // Default total lectures (can be overridden per batch)
-    defaultTotalLectures: {
-      type: Number,
-      required: [true, 'Default total lectures is required'],
-      min: [1, 'Course must have at least 1 lecture'],
-    },
-
-    // Topics/Roadmap stored as array of objects - INTEGRATED APPROACH
-    topics: [
-      {
-        _id: {
-          type: Schema.Types.ObjectId,
-          default: () => new Types.ObjectId(),
-        },
-        title: {
-          type: String,
-          required: [true, 'Topic title is required'],
-          trim: true,
-          maxlength: [200, 'Topic title cannot exceed 200 characters'],
-        },
-        description: {
-          type: String,
-          trim: true,
-          maxlength: [500, 'Topic description cannot exceed 500 characters'],
-        },
-        order: {
-          type: Number,
-          required: true,
-          min: [1, 'Order must be at least 1'],
-        },
-        estimatedHours: {
-          type: Number,
-          min: [0, 'Estimated hours cannot be negative'],
-          default: 1,
-        },
-        // INTEGRATED: Store completion per batch directly in topic
-        batchCompletions: [
-          {
-            batch: {
-              type: Schema.Types.ObjectId,
-              ref: 'Batch',
-              required: true,
-            },
-            completedBy: {
-              type: Schema.Types.ObjectId,
-              ref: 'User',
-              required: true,
-            },
-            completedAt: {
-              type: Date,
-              default: Date.now,
-            },
-            notes: {
-              type: String,
-              trim: true,
-              maxlength: [300, 'Notes cannot exceed 300 characters'],
-            },
-          },
-        ],
-      },
-    ],
+    subjects: [subjectSchema],
 
     status: {
       type: String,
@@ -121,52 +147,6 @@ const createCourseSchema = () => {
       index: true,
     },
   });
-
-  // Method to mark topic as completed for a specific batch
-  //   courseSchema.methods.markTopicCompleted = function (
-  //     topicId: string,
-  //     batchId: string,
-  //     facultyId: string,
-  //     notes?: string
-  //   ) {
-  //     const topic = this.topics.id(topicId);
-  //     if (!topic) throw new Error('Topic not found');
-
-  //     // Check if already completed for this batch
-  //     const existingCompletion = topic.batchCompletions.find(
-  //       (completion: any) => completion.batch.toString() === batchId
-  //     );
-
-  //     if (existingCompletion) {
-  //       throw new Error('Topic already completed for this batch');
-  //     }
-
-  //     topic.batchCompletions.push({
-  //       batch: batchId,
-  //       completedBy: facultyId,
-  //       completedAt: new Date(),
-  //       notes: notes || '',
-  //     });
-
-  //     return this.save();
-  //   };
-
-  // Method to get completion status for a specific batch
-  //   courseSchema.methods.getCompletionForBatch = function (batchId: string) {
-  //     const totalTopics = this.topics.length;
-  //     const completedTopics = this.topics.filter((topic: any) =>
-  //       topic.batchCompletions.some(
-  //         (completion: any) => completion.batch.toString() === batchId
-  //       )
-  //     ).length;
-
-  //     return {
-  //       totalTopics,
-  //       completedTopics,
-  //       completionPercentage:
-  //         totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0,
-  //     };
-  //   };
 
   return courseSchema;
 };
