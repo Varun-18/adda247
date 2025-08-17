@@ -104,6 +104,12 @@ app.use('/', rootRouter);
 app.get('/', (req: Request, res: Response) => {
   res.send('Success From Vercel');
 });
+app.get('/health', (req: Request, res: Response) => {
+  console.log('🚀 ~ health check request');
+  console.log('🚀 ~ health check request pinger url', process.env.KEEP_IT_URL);
+  res.status(200).json({ message: 'All Is Well' });
+});
+
 const connectToDatabase = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI || '');
