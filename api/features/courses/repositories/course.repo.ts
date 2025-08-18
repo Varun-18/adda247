@@ -40,18 +40,26 @@ export const createCourseRepository = () => {
     );
   };
 
-  const updateSubject = async (
-    courseId: string,
-    subjectId: string,
-    title: string,
-    description: string
-  ) => {
+  const updateSubject = async ({
+    courseId,
+    subjectId,
+    title,
+    description,
+    order,
+  }: {
+    courseId: string;
+    subjectId: string;
+    title: string;
+    description: string;
+    order: number;
+  }) => {
     return await CourseModel.updateOne(
       { _id: courseId, 'subjects._id': subjectId },
       {
         $set: {
           'subjects.$.title': title,
           'subjects.$.description': description,
+          'subjects.$.order': order,
         },
       }
     );
@@ -94,14 +102,21 @@ export const createCourseRepository = () => {
     );
   };
 
-  const updateTopic = async (
-    courseId: string,
-    subjectId: string,
-    topicId: string,
-    title: string,
-    description: string,
-    estimatedHours: number
-  ) => {
+  const updateTopic = async ({
+    courseId,
+    subjectId,
+    topicId,
+    title,
+    description,
+    estimatedHours = 1,
+  }: {
+    courseId: string;
+    subjectId: string;
+    topicId: string;
+    title: string;
+    description: string;
+    estimatedHours: number;
+  }) => {
     return await CourseModel.updateOne(
       {
         _id: courseId,
@@ -170,15 +185,23 @@ export const createCourseRepository = () => {
     );
   };
 
-  const updateLecture = async (
-    courseId: string,
-    subjectId: string,
-    topicId: string,
-    lectureId: string,
-    title: string,
-    description: string,
-    durationMinutes: number
-  ) => {
+  const updateLecture = async ({
+    courseId,
+    subjectId,
+    topicId,
+    lectureId,
+    title,
+    description,
+    durationMinutes,
+  }: {
+    courseId: string;
+    subjectId: string;
+    topicId: string;
+    lectureId: string;
+    title: string;
+    description: string;
+    durationMinutes: number;
+  }) => {
     return await CourseModel.updateOne(
       {
         _id: courseId,

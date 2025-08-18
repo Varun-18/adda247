@@ -5,10 +5,10 @@ import {
   UpdateQuery,
 } from 'mongoose';
 
+import { PaginatedResponse } from 'shared/dto';
+import { FilterQuery, PaginationQuery } from 'shared/query';
 import { RepositoryActions } from 'shared/types';
 import { BaseDocument } from '../schema';
-import { FilterQuery, PaginationQuery } from 'shared/query';
-import { PaginatedResponse } from 'shared/dto';
 
 export const CreateBaseRepository = <T extends BaseDocument>(
   model: Model<T>
@@ -65,6 +65,58 @@ export const CreateBaseRepository = <T extends BaseDocument>(
 
     const [data, totalItems] = await Promise.all([
       model.find(mongoFilter).sort(sort).skip(skip).limit(limit).exec(),
+      model.countDocuments(mongoFilter),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      data,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  };
+
+  const findWithRelations = async (
+    filter: FilterQuery = {},
+    pagination: PaginationQuery = {},
+    relations: string[] = []
+  ): Promise<PaginatedResponse<T>> => {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = pagination;
+
+    const skip = (page - 1) * limit;
+    const sort: Record<string, SortOrder> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
+
+    const mongoFilter = {
+      ...filter,
+      deletedAt: null,
+    } as MongooseFilterQuery<T>;
+
+    // Build the query with relations
+    let query = model.find(mongoFilter).sort(sort).skip(skip).limit(limit);
+
+    // Add populate for relations
+    if (relations.length > 0) {
+      relations.forEach((relation) => {
+        query = query.populate(relation);
+      });
+    }
+
+    const [data, totalItems] = await Promise.all([
+      query.exec(),
       model.countDocuments(mongoFilter),
     ]);
 
@@ -151,6 +203,7 @@ export const CreateBaseRepository = <T extends BaseDocument>(
     findById,
     findOne,
     findAll,
+    findWithRelations,
     update,
     delete: deleteEntity,
     deleteMany,

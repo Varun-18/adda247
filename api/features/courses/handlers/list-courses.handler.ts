@@ -7,11 +7,13 @@ import { CourseService } from '../services';
 export const listAllCourses = async (req: Request, res: Response) => {
   const courseService = CourseService();
   try {
-    const users = await courseService.findAll();
+    const courses = await courseService.findWithRelations({}, {}, [
+      'createdBy',
+    ]);
 
     return ResponseHandler.success<PaginatedResponse<CourseEntity>>(
       res,
-      users,
+      courses,
       RESPONSE_MESSAGES.COURSES_RETRIEVED,
       STATUS_CODES.OK,
       true

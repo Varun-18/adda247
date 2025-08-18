@@ -3,15 +3,13 @@ import { CourseStatus } from 'shared';
 import { Types } from 'mongoose';
 
 export const updateCourseDto = yup.object({
-  params: yup.object({
-    id: yup
+  body: yup.object({
+    courseId: yup
       .string()
       .required('Course ID is required')
       .test('is-objectid', 'Invalid MongoDB ObjectId', (value) =>
         Types.ObjectId.isValid(value)
       ),
-  }),
-  body: yup.object({
     title: yup
       .string()
       .required('Course title is required')
@@ -31,24 +29,16 @@ export const updateCourseDto = yup.object({
       .uppercase()
       .max(10, 'Course code cannot exceed 10 characters'),
 
-    duration: yup
-      .object({
-        value: yup
-          .number()
-          .required('Duration value is required')
-          .min(1, 'Duration must be at least 1'),
-
-        unit: yup
-          .string()
-          .required('Duration unit is required')
-          .oneOf(['days', 'weeks', 'months', 'years'], 'Invalid duration unit'),
-      })
-      .required('Duration is required'),
-
-    defaultTotalLectures: yup
-      .number()
-      .required('Default total lectures is required')
-      .min(1, 'Course must have at least 1 lecture'),
+    duration: yup.object({
+      value: yup
+        .number()
+        .required('Duration value is required')
+        .min(1, 'Duration must be at least 1'),
+      unit: yup
+        .string()
+        .required('Duration unit is required')
+        .oneOf(['days', 'weeks', 'months', 'years'], 'Invalid duration unit'),
+    }),
 
     status: yup
       .string()

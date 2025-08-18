@@ -1,15 +1,23 @@
 import { AuthRequest } from 'declaration';
 import { Response } from 'express';
+import { Types } from 'mongoose';
 import { ResponseHandler, STATUS_CODES } from 'shared';
 import { RESPONSE_MESSAGES } from '../constant';
 import { CourseService } from '../services';
-import { Types } from 'mongoose';
 
-export const updateCourseMetadata = async (req: AuthRequest, res: Response) => {
+export const updateLecture = async (req: AuthRequest, res: Response) => {
   const courseService = CourseService();
   try {
-    const { courseId, title, description, status, courseCode, duration } =
-      req.body;
+    const {
+      courseId,
+      subjectId,
+      topicId,
+      lectureId,
+      title,
+      description,
+      durationMinutes,
+    } = req.body;
+
     const course = await courseService.findOne({
       _id: new Types.ObjectId(courseId),
     });
@@ -22,12 +30,14 @@ export const updateCourseMetadata = async (req: AuthRequest, res: Response) => {
       );
     }
 
-    const updatedCourse = await courseService.update(courseId, {
+    const updatedCourse = await courseService.updateLecture({
+      courseId,
+      topicId,
+      subjectId,
+      lectureId,
       title,
       description,
-      status,
-      courseCode,
-      duration,
+      durationMinutes,
     });
 
     return ResponseHandler.success(

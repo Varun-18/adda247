@@ -12,6 +12,11 @@ export interface RepositoryActions<T> {
     filter?: FilterQuery,
     pagination?: PaginationQuery
   ) => Promise<PaginatedResponse<T>>;
+  findWithRelations: (
+    filter?: FilterQuery,
+    pagination?: PaginationQuery,
+    relations?: string[]
+  ) => Promise<PaginatedResponse<T>>;
   update: (id: string, data: Partial<T>) => Promise<T | null>;
   delete: (id: string, softDelete?: boolean) => Promise<T | null>;
   deleteMany: (filter: FilterQuery, softDelete?: boolean) => Promise<number>;

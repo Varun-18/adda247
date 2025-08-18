@@ -6,6 +6,10 @@ import {
   addTopicDto,
   createCourseDto,
   getCourseDto,
+  updateCourseDto,
+  updateLectureDto,
+  updateSubjectDto,
+  updateTopicDto,
 } from '../dto';
 import { CourseHandler } from '../handlers';
 
@@ -44,22 +48,31 @@ courseRouter.post(
   schemaValidator(addLectureDto),
   CourseHandler.addLecture
 );
-// courseRouter.put(
-//   '/edit/:id',
-//   schemaValidator(updateCourseDto),
-//   CourseHandler.updateCourseMetadata
-// );
 
-// courseRouter.post(
-//   '/add-topic',
-//   schemaValidator(addTopicDto),
-//   CourseHandler.addCourseTopic
-// );
-// courseRouter.put(
-//   '/update-topic',
-//   schemaValidator(updateTopicDto),
-//   CourseHandler.updateCourseTopic
-// );
+courseRouter.put(
+  '/update',
+  schemaValidator(updateCourseDto),
+  CourseHandler.updateCourseMetadata
+);
+
+courseRouter.put(
+  '/update/subject',
+  schemaValidator(updateSubjectDto),
+  CourseHandler.updateSubject
+);
+
+courseRouter.put(
+  '/update/topic',
+  schemaValidator(updateTopicDto),
+  CourseHandler.updateTopic
+);
+
+courseRouter.put(
+  '/update/lecture',
+  schemaValidator(updateLectureDto),
+  CourseHandler.updateLecture
+);
+
 // courseRouter.delete(
 //   '/:id/remove-topic/:topicId',
 //   schemaValidator(removeTopicDto),
