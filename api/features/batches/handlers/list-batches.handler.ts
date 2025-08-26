@@ -7,12 +7,12 @@ import { BatchEntity } from '../entity';
 export const listAllBatches = async (req: Request, res: Response) => {
   const batchService = BatchService();
   try {
-    const courses = await batchService.findWithRelations({}, {}, []);
+    const batches = await batchService.findWithRelations({}, {}, []);
 
     return ResponseHandler.success<PaginatedResponse<BatchEntity>>(
       res,
-      courses,
-      RESPONSE_MESSAGES.BATCHS_RETRIEVED,
+      batches,
+      RESPONSE_MESSAGES.BATCHES_RETRIEVED,
       STATUS_CODES.OK,
       true
     );

@@ -25,35 +25,94 @@ export const createBatchRepository = () => {
     ).exec();
   };
 
+  // const getNextLectureForFaculty = async (facultyId: string) => {
+  //   const result = await BatchModel.aggregate([
+  //     { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+  //     { $unwind: '$subjects' },
+  //     { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+  //     { $unwind: '$subjects.topics' },
+  //     { $unwind: '$subjects.topics.lectures' },
+  //     {
+  //       $match: {
+  //         'subjects.topics.lectures.completedAt': { $exists: false },
+  //       },
+  //     },
+  //     {
+  //       $sort: {
+  //         'subjects.topics.lectures._id': 1, // order by creation if no date
+  //       },
+  //     },
+  //     {
+  //       $project: {
+  //         batchId: '$_id',
+  //         batchName: '$name',
+  //         subjectTitle: '$subjects.title',
+  //         topicTitle: '$subjects.topics.title',
+  //         lecture: '$subjects.topics.lectures',
+  //       },
+  //     },
+  //     { $limit: 1 },
+  //   ]);
+  //   return result[0] || null;
+  // };
+
   const getNextLectureForFaculty = async (facultyId: string) => {
     const result = await BatchModel.aggregate([
       { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+
+      // Break down nested arrays
       { $unwind: '$subjects' },
       { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
       { $unwind: '$subjects.topics' },
       { $unwind: '$subjects.topics.lectures' },
+
+      // Only incomplete lectures
       {
         $match: {
           'subjects.topics.lectures.completedAt': { $exists: false },
         },
       },
+
+      // Sort lectures in each subject by order
       {
         $sort: {
-          'subjects.topics.lectures._id': 1, // order by creation if no date
+          'subjects.topics.lectures.order': 1,
         },
       },
+
+      // Group by batch + subject, pick first uncompleted lecture
+      {
+        $group: {
+          _id: {
+            batchId: '$_id',
+            subjectId: '$subjects._id',
+          },
+          batchName: { $first: '$name' },
+          subjectName: { $first: '$subjects.title' },
+          topicId: { $first: '$subjects.topics._id' },
+          topicName: { $first: '$subjects.topics.title' },
+          lectureId: { $first: '$subjects.topics.lectures._id' },
+          lectureTitle: { $first: '$subjects.topics.lectures.title' },
+        },
+      },
+
+      // Format final payload
       {
         $project: {
-          batchId: '$_id',
-          batchName: '$name',
-          subjectTitle: '$subjects.title',
-          topicTitle: '$subjects.topics.title',
-          lecture: '$subjects.topics.lectures',
+          _id: 0,
+          batchId: '$_id.batchId',
+          subjectId: '$_id.subjectId',
+          topicId: '$topicId',
+          lectureId: '$lectureId',
+          batchName: 1,
+          subjectName: 1,
+          topicName: '$topicName',
+          lectureTitle: 1,
         },
       },
-      { $limit: 1 },
     ]);
-    return result[0] || null;
+
+    return result;
   };
 
   const markLectureCompleted = async ({

@@ -3,7 +3,11 @@ export const RESPONSE_MESSAGES = {
   BATCH_UPDATED: 'Batch updated successfully',
   BATCH_DELETED: 'Batch deleted successfully',
   BATCH_RETRIEVED: 'Batch retrieved successfully',
-  BATCHS_RETRIEVED: 'Batches retrieved successfully',
+  BATCHES_RETRIEVED: 'Batches retrieved successfully',
+
+  LECTURES_RETRIVED: 'Lectures retrieved successfully',
+  SUBJECTS_RETRIVED: 'Subjects retrieved successfully',
+  LECTURE_COMPLETED: 'Lecture completed successfully',
 
   // Error messages
   BATCH_NOT_FOUND: 'Batch not found',

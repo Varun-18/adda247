@@ -13,6 +13,12 @@ batchRouter.post(
   BatchHandler.createBatch
 );
 
+batchRouter.post('/complete/lecture', BatchHandler.markLectureCompleted);
+
+batchRouter.get('/get/subjects', BatchHandler.getFacultySubjects);
+
+batchRouter.get('/get/lectures', BatchHandler.getFacultyLectures);
+
 batchRouter.get('/list', BatchHandler.listAllBatches);
 
 export { batchRouter };
