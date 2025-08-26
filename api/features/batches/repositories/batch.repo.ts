@@ -13,16 +13,47 @@ export const createBatchRepository = () => {
       .exec();
   };
 
+  // const getFacultySubjects = async (facultyId: string) => {
+  //   return await BatchModel.find(
+  //     { 'subjects.facultyId': new Types.ObjectId(facultyId) },
+  //     {
+  //       name: 1,
+  //       startDate: 1,
+  //       endDate: 1,
+  //       'subjects.$': 1,
+  //     }
+  //   ).exec();
+  // };
   const getFacultySubjects = async (facultyId: string) => {
-    return await BatchModel.find(
-      { 'subjects.facultyId': new Types.ObjectId(facultyId) },
+    const result = await BatchModel.aggregate([
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+
+      // Unwind to filter subjects belonging to faculty
+      { $unwind: '$subjects' },
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+
+      // Rebuild documents with only the faculty's subjects
       {
-        name: 1,
-        startDate: 1,
-        endDate: 1,
-        'subjects.$': 1,
-      }
-    ).exec();
+        $group: {
+          _id: '$_id',
+          name: { $first: '$name' },
+          startDate: { $first: '$startDate' },
+          endDate: { $first: '$endDate' },
+          subjects: { $push: '$subjects' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          startDate: 1,
+          endDate: 1,
+          subjects: 1,
+        },
+      },
+    ]).exec();
+
+    return result;
   };
 
   // const getNextLectureForFaculty = async (facultyId: string) => {
