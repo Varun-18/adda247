@@ -15,6 +15,13 @@ batchRouter.post(
 
 batchRouter.post('/complete/lecture', BatchHandler.markLectureCompleted);
 
+batchRouter.get('/faculty/analytics', BatchHandler.getFacultyAnalytics);
+batchRouter.get('/faculty/progress', BatchHandler.getFacultyBatchProgress);
+batchRouter.get(
+  '/faculty/recent-activity',
+  BatchHandler.getFacultyRecentActivity
+);
+
 batchRouter.get('/get/subjects', BatchHandler.getFacultySubjects);
 
 batchRouter.get('/get/lectures', BatchHandler.getFacultyLectures);

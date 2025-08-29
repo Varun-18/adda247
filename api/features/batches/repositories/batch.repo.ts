@@ -182,11 +182,180 @@ export const createBatchRepository = () => {
     );
   };
 
+  const getFacultyAnalytics = async (facultyId: string) => {
+    const result = await BatchModel.aggregate([
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+      { $unwind: '$subjects' },
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+      { $unwind: '$subjects.topics' },
+      { $unwind: '$subjects.topics.lectures' },
+
+      {
+        $group: {
+          _id: null,
+          assignedBatches: { $addToSet: '$_id' },
+          totalLectures: { $sum: 1 },
+          completedLectures: {
+            $sum: {
+              $cond: [
+                { $ifNull: ['$subjects.topics.lectures.completedAt', false] },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          assignedBatches: { $size: '$assignedBatches' },
+          totalLectures: 1,
+          completedLectures: 1,
+          completionRate: {
+            $cond: [
+              { $eq: ['$totalLectures', 0] },
+              0,
+              {
+                $multiply: [
+                  { $divide: ['$completedLectures', '$totalLectures'] },
+                  100,
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+
+    return (
+      result[0] || {
+        assignedBatches: 0,
+        totalLectures: 0,
+        completedLectures: 0,
+        completionRate: 0,
+      }
+    );
+  };
+
+  const getFacultyBatchProgress = async (facultyId: string) => {
+    const result = await BatchModel.aggregate([
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+      { $unwind: '$subjects' },
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+      { $unwind: '$subjects.topics' },
+      { $unwind: '$subjects.topics.lectures' },
+
+      {
+        $group: {
+          _id: {
+            batchId: '$_id',
+            subjectId: '$subjects._id',
+          },
+          batchName: { $first: '$name' },
+          subjectTitle: { $first: '$subjects.title' },
+          totalLectures: { $sum: 1 },
+          completedLectures: {
+            $sum: {
+              $cond: [
+                { $ifNull: ['$subjects.topics.lectures.completedAt', false] },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.batchId',
+          batchName: { $first: '$batchName' },
+          subjects: {
+            $push: {
+              subjectId: '$_id.subjectId',
+              subjectTitle: '$subjectTitle',
+              totalLectures: '$totalLectures',
+              completedLectures: '$completedLectures',
+              completionRate: {
+                $cond: [
+                  { $eq: ['$totalLectures', 0] },
+                  0,
+                  {
+                    $multiply: [
+                      { $divide: ['$completedLectures', '$totalLectures'] },
+                      100,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          batchId: '$_id',
+          batchName: 1,
+          subjects: 1,
+        },
+      },
+    ]);
+
+    return result;
+  };
+
+  const getFacultyRecentActivity = async (
+    facultyId: string,
+    days: number = 3
+  ) => {
+    const sinceDate = new Date();
+    sinceDate.setDate(sinceDate.getDate() - days);
+
+    const result = await BatchModel.aggregate([
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+      { $unwind: '$subjects' },
+      { $match: { 'subjects.facultyId': new Types.ObjectId(facultyId) } },
+      { $unwind: '$subjects.topics' },
+      { $unwind: '$subjects.topics.lectures' },
+
+      // only lectures completed recently
+      {
+        $match: {
+          'subjects.topics.lectures.completedAt': { $gte: sinceDate },
+          'subjects.topics.lectures.facultyId': new Types.ObjectId(facultyId),
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          batchId: '$_id',
+          batchName: '$name',
+          subjectId: '$subjects._id',
+          subjectTitle: '$subjects.title',
+          topicId: '$subjects.topics._id',
+          topicTitle: '$subjects.topics.title',
+          lectureId: '$subjects.topics.lectures._id',
+          lectureTitle: '$subjects.topics.lectures.title',
+          completedAt: '$subjects.topics.lectures.completedAt',
+        },
+      },
+
+      { $sort: { completedAt: -1 } }, // latest first
+    ]);
+
+    return result;
+  };
+
   return {
     ...baseRepository,
     getBatchWithRelationsAsync,
     getFacultySubjects,
     getNextLectureForFaculty,
     markLectureCompleted,
+    getFacultyAnalytics,
+    getFacultyBatchProgress,
+    getFacultyRecentActivity,
   };
 };
