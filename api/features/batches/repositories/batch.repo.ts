@@ -348,6 +348,206 @@ export const createBatchRepository = () => {
     return result;
   };
 
+  const getLectureAssignmentsOverview = async () => {
+    return await BatchModel.aggregate([
+      { $unwind: '$subjects' },
+      { $unwind: '$subjects.topics' },
+      { $unwind: '$subjects.topics.lectures' },
+
+      {
+        $group: {
+          _id: {
+            batchId: '$_id',
+            subjectId: '$subjects._id',
+            facultyId: '$subjects.facultyId',
+          },
+          batchName: { $first: '$name' },
+          subjectTitle: { $first: '$subjects.title' },
+          totalLectures: { $sum: 1 },
+          completedLectures: {
+            $sum: {
+              $cond: [
+                { $ifNull: ['$subjects.topics.lectures.completedAt', false] },
+                1,
+                0,
+              ],
+            },
+          },
+          lastLecture: { $max: '$subjects.topics.lectures.completedAt' },
+        },
+      },
+
+      // 🔗 Join with User collection to fetch faculty details
+      {
+        $lookup: {
+          from: 'users', // collection name in Mongo
+          localField: '_id.facultyId',
+          foreignField: '_id',
+          as: 'faculty',
+        },
+      },
+      { $unwind: '$faculty' }, // flatten faculty object
+
+      {
+        $project: {
+          _id: 0,
+          batchId: '$_id.batchId',
+          batchName: 1,
+          subjectId: '$_id.subjectId',
+          subjectTitle: 1,
+          facultyId: '$_id.facultyId',
+          faculty: {
+            _id: '$faculty._id',
+            firstName: '$faculty.firstName',
+            lastName: '$faculty.lastName',
+            email: '$faculty.email',
+          },
+          totalLectures: 1,
+          completedLectures: 1,
+          remainingLectures: {
+            $subtract: ['$totalLectures', '$completedLectures'],
+          },
+          completionRate: {
+            $cond: [
+              { $eq: ['$totalLectures', 0] },
+              0,
+              {
+                $multiply: [
+                  { $divide: ['$completedLectures', '$totalLectures'] },
+                  100,
+                ],
+              },
+            ],
+          },
+          lastLecture: 1,
+        },
+      },
+    ]);
+  };
+
+  const getAllFacultyRecentActivity = async (days: number = 7) => {
+    const sinceDate = new Date();
+    sinceDate.setDate(sinceDate.getDate() - days);
+
+    return await BatchModel.aggregate([
+      { $unwind: '$subjects' },
+      { $unwind: '$subjects.topics' },
+      { $unwind: '$subjects.topics.lectures' },
+      {
+        $match: {
+          'subjects.topics.lectures.completedAt': { $gte: sinceDate },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          batchId: '$_id',
+          batchName: '$name',
+          subjectId: '$subjects._id',
+          subjectTitle: '$subjects.title',
+          facultyId: '$subjects.facultyId',
+          topicId: '$subjects.topics._id',
+          topicTitle: '$subjects.topics.title',
+          lectureId: '$subjects.topics.lectures._id',
+          lectureTitle: '$subjects.topics.lectures.title',
+          completedAt: '$subjects.topics.lectures.completedAt',
+        },
+      },
+      { $sort: { completedAt: -1 } },
+    ]);
+  };
+
+  const getBusinessAnalytics = async () => {
+    const today = new Date();
+
+    const result = await BatchModel.aggregate([
+      {
+        $facet: {
+          totalTeachers: [
+            { $unwind: '$subjects' },
+            { $group: { _id: '$subjects.facultyId' } },
+            { $count: 'count' },
+          ],
+          activeBatches: [
+            {
+              $match: {
+                startDate: { $lte: today },
+                endDate: { $gte: today },
+              },
+            },
+            { $count: 'count' },
+          ],
+          activeCourses: [
+            {
+              $match: {
+                startDate: { $lte: today },
+                endDate: { $gte: today },
+              },
+            },
+            { $group: { _id: '$courseTemplateId' } },
+            { $count: 'count' },
+          ],
+          batchCompletion: [
+            { $unwind: '$subjects' },
+            { $unwind: '$subjects.topics' },
+            { $unwind: '$subjects.topics.lectures' },
+            {
+              $group: {
+                _id: '$_id',
+                batchName: { $first: '$name' },
+                totalLectures: { $sum: 1 },
+                completedLectures: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $ifNull: [
+                          '$subjects.topics.lectures.completedAt',
+                          false,
+                        ],
+                      },
+                      1,
+                      0,
+                    ],
+                  },
+                },
+              },
+            },
+            {
+              $project: {
+                batchId: '$_id',
+                batchName: 1,
+                totalLectures: 1,
+                completedLectures: 1,
+                completionRate: {
+                  $cond: [
+                    { $eq: ['$totalLectures', 0] },
+                    0,
+                    {
+                      $multiply: [
+                        { $divide: ['$completedLectures', '$totalLectures'] },
+                        100,
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          totalTeachers: { $arrayElemAt: ['$totalTeachers.count', 0] },
+          activeBatches: { $arrayElemAt: ['$activeBatches.count', 0] },
+          activeCourses: { $arrayElemAt: ['$activeCourses.count', 0] },
+          batchCompletion: '$batchCompletion',
+        },
+      },
+    ]);
+
+    return result[0];
+  };
+
   return {
     ...baseRepository,
     getBatchWithRelationsAsync,
@@ -357,5 +557,8 @@ export const createBatchRepository = () => {
     getFacultyAnalytics,
     getFacultyBatchProgress,
     getFacultyRecentActivity,
+    getBusinessAnalytics,
+    getAllFacultyRecentActivity,
+    getLectureAssignmentsOverview,
   };
 };

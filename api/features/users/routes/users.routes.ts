@@ -17,5 +17,6 @@ userRouter.use(authenticateUser);
 
 userRouter.get('/', UserHandler.getUser);
 userRouter.get('/list', UserHandler.listAllUsers);
+userRouter.get('/list/faculty', UserHandler.listAllFaculty);
 
 export { userRouter };

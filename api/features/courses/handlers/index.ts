@@ -3,6 +3,7 @@ import { addSubject } from './add-subject.handler';
 import { addTopic } from './add-topic.handler';
 import { getCourse } from './course-details.handler';
 import { createCourse } from './create-course.handler';
+import { getAllCourses } from './get-all-courses.handler';
 import { listAllCourses } from './list-courses.handler';
 import { removeCourseTopic } from './remove-course-topic.handler';
 import { updateCourseMetadata } from './update-course.handler';
@@ -22,4 +23,5 @@ export const CourseHandler = {
   addLecture,
   updateSubject,
   updateLecture,
+  getAllCourses,
 };

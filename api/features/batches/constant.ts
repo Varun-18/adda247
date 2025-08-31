@@ -13,6 +13,10 @@ export const RESPONSE_MESSAGES = {
   RECENT_ACTIVITY: 'Recent activity retrieved successfully',
   BATCH_PROGRESS: 'Batch Progress retrieved successfully',
 
+  BUSINESS_ANALYTICS_RETRIVED: 'Business analytics retrieved successfully',
+  BUSINESS_ACTIVITY: 'Recent activity retrieved successfully',
+  BUSINESS_ASSIGNMENT_OVERVIEW: 'Assignment overview retrieved successfully',
+
   // Error messages
   BATCH_NOT_FOUND: 'Batch not found',
   INVALID_CREDENTIALS: 'Invalid email or password',

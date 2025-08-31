@@ -16,6 +16,7 @@ import { CourseHandler } from '../handlers';
 const courseRouter = Router();
 
 courseRouter.get('/list', CourseHandler.listAllCourses);
+courseRouter.get('/all', CourseHandler.getAllCourses);
 
 courseRouter.get(
   '/:id',

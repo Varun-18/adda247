@@ -22,6 +22,13 @@ batchRouter.get(
   BatchHandler.getFacultyRecentActivity
 );
 
+batchRouter.get('/business/activity', BatchHandler.getAllRecentActivity);
+batchRouter.get(
+  '/business/overview',
+  BatchHandler.getLectureAssignmentsOverview
+);
+batchRouter.get('/business/analytics', BatchHandler.getBusinessAnalytics);
+
 batchRouter.get('/get/subjects', BatchHandler.getFacultySubjects);
 
 batchRouter.get('/get/lectures', BatchHandler.getFacultyLectures);
