@@ -47,7 +47,7 @@ export const login = async (req: Request, res: Response) => {
         maxAge: 3600000,
         sameSite: 'none',
         path: '/',
-        domain: 'https://adda247-scheduler.vercel.app',
+        domain: '.vercel.app',
       }
     );
   } catch (error) {
