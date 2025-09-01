@@ -46,6 +46,7 @@ export const login = async (req: Request, res: Response) => {
         secure: true,
         maxAge: 3600000,
         sameSite: 'none',
+        path: '/',
       }
     );
   } catch (error) {

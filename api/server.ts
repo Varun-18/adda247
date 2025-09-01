@@ -40,6 +40,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
+      'https://adda247-scheduler.vercel.app',
       'http://localhost:5173',
       'http://localhost:5174',
       'http://152.59.36.203:3000',
