@@ -9,7 +9,21 @@ export const authenticateUser = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.token;
+    // Extract token from Authorization header
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      res.status(403).json({
+        message: 'Authorization header is required for authentication',
+      });
+      return;
+    }
+
+    // Check if header follows "Bearer <token>" format
+    const token = authHeader.startsWith('Bearer ')
+      ? authHeader.slice(7)
+      : authHeader;
+
     if (!token) {
       res
         .status(403)
