@@ -21,7 +21,7 @@ export const removeBatch = async (req: AuthRequest, res: Response) => {
       );
     }
 
-    const deleted = await batchService.delete(batchId);
+    const deleted = await batchService.deleteBatch(batchId);
 
     return ResponseHandler.success(
       res,
