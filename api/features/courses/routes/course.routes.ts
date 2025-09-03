@@ -6,6 +6,10 @@ import {
   addTopicDto,
   createCourseDto,
   getCourseDto,
+  removeCourseDto,
+  removeLectureDto,
+  removeSubjectDto,
+  removeTopicDto,
   updateCourseDto,
   updateLectureDto,
   updateSubjectDto,
@@ -74,10 +78,28 @@ courseRouter.put(
   CourseHandler.updateLecture
 );
 
-// courseRouter.delete(
-//   '/:id/remove-topic/:topicId',
-//   schemaValidator(removeTopicDto),
-//   CourseHandler.removeCourseTopic
-// );
+courseRouter.post(
+  '/delete/course',
+  schemaValidator(removeCourseDto),
+  CourseHandler.removeCourse
+);
+
+courseRouter.post(
+  '/delete/subject',
+  schemaValidator(removeSubjectDto),
+  CourseHandler.removeCourseSubject
+);
+
+courseRouter.post(
+  '/delete/topic',
+  schemaValidator(removeTopicDto),
+  CourseHandler.removeCourseTopic
+);
+
+courseRouter.post(
+  '/delete/lecture',
+  schemaValidator(removeLectureDto),
+  CourseHandler.removeCourseLecture
+);
 
 export { courseRouter };

@@ -548,8 +548,139 @@ export const createBatchRepository = () => {
     return result[0];
   };
 
+  /* ------------------------ BATCH CRUD ------------------------ */
+  const updateBatch = async (batchId: string, data: Partial<BatchEntity>) => {
+    return await BatchModel.updateOne(
+      { _id: new Types.ObjectId(batchId) },
+      { $set: data }
+    );
+  };
+
+  const deleteBatch = async (batchId: string) => {
+    return await BatchModel.deleteOne({ _id: new Types.ObjectId(batchId) });
+  };
+
+  /* ------------------------ SUBJECT CRUD ------------------------ */
+  const updateSubjectInBatch = async (
+    batchId: string,
+    subjectId: string,
+    data: Partial<any>
+  ) => {
+    return await BatchModel.updateOne(
+      { _id: batchId, 'subjects._id': subjectId },
+      {
+        $set: {
+          'subjects.$.title': data.title,
+          'subjects.$.facultyId': data.facultyId,
+          'subjects.$.totalLectures': data.totalLectures,
+        },
+      }
+    );
+  };
+
+  const removeSubjectFromBatch = async (batchId: string, subjectId: string) => {
+    return await BatchModel.updateOne(
+      { _id: batchId },
+      { $pull: { subjects: { _id: subjectId } } }
+    );
+  };
+
+  /* ------------------------ TOPIC CRUD ------------------------ */
+  const updateTopicInBatch = async (
+    batchId: string,
+    subjectId: string,
+    topicId: string,
+    data: Partial<any>
+  ) => {
+    return await BatchModel.updateOne(
+      {
+        _id: batchId,
+        'subjects._id': subjectId,
+        'subjects.topics._id': topicId,
+      },
+      {
+        $set: {
+          'subjects.$[s].topics.$[t].title': data.title,
+          'subjects.$[s].topics.$[t].facultyId': data.facultyId,
+        },
+      },
+      {
+        arrayFilters: [{ 's._id': subjectId }, { 't._id': topicId }],
+      }
+    );
+  };
+
+  const removeTopicFromBatch = async (
+    batchId: string,
+    subjectId: string,
+    topicId: string
+  ) => {
+    return await BatchModel.updateOne(
+      { _id: batchId, 'subjects._id': subjectId },
+      { $pull: { 'subjects.$.topics': { _id: topicId } } }
+    );
+  };
+
+  /* ------------------------ LECTURE CRUD ------------------------ */
+  const updateLectureInBatch = async (
+    batchId: string,
+    subjectId: string,
+    topicId: string,
+    lectureId: string,
+    data: Partial<any>
+  ) => {
+    return await BatchModel.updateOne(
+      {
+        _id: batchId,
+        'subjects._id': subjectId,
+        'subjects.topics._id': topicId,
+        'subjects.topics.lectures._id': lectureId,
+      },
+      {
+        $set: {
+          'subjects.$[s].topics.$[t].lectures.$[l].title': data.title,
+          'subjects.$[s].topics.$[t].lectures.$[l].description':
+            data.description,
+          'subjects.$[s].topics.$[t].lectures.$[l].facultyId': data.facultyId,
+        },
+      },
+      {
+        arrayFilters: [
+          { 's._id': subjectId },
+          { 't._id': topicId },
+          { 'l._id': lectureId },
+        ],
+      }
+    );
+  };
+
+  const removeLectureFromBatch = async (
+    batchId: string,
+    subjectId: string,
+    topicId: string,
+    lectureId: string
+  ) => {
+    return await BatchModel.updateOne(
+      {
+        _id: batchId,
+        'subjects._id': subjectId,
+        'subjects.topics._id': topicId,
+      },
+      { $pull: { 'subjects.$[s].topics.$[t].lectures': { _id: lectureId } } },
+      { arrayFilters: [{ 's._id': subjectId }, { 't._id': topicId }] }
+    );
+  };
+
   return {
     ...baseRepository,
+    updateBatch,
+    deleteBatch,
+    updateSubjectInBatch,
+    removeSubjectFromBatch,
+    updateTopicInBatch,
+    removeTopicFromBatch,
+    updateLectureInBatch,
+    removeLectureFromBatch,
     getBatchWithRelationsAsync,
     getFacultySubjects,
     getNextLectureForFaculty,

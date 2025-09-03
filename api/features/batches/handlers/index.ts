@@ -9,9 +9,11 @@ import { getFacultyRecentActivity } from './get-faculty-recent-activity.handler'
 import { getFacultySubjects } from './get-faculty-subjects.handler';
 import { getLectureAssignmentsOverview } from './lecture-assignment-overview.handler';
 import { listAllBatches } from './list-batches.handler';
+import { removeBatch } from './remove-batch.handler';
 
 export const BatchHandler = {
   createBatch,
+  removeBatch,
   listAllBatches,
   getFacultyLectures,
   getFacultySubjects,

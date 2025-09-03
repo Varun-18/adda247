@@ -5,7 +5,10 @@ import { getCourse } from './course-details.handler';
 import { createCourse } from './create-course.handler';
 import { getAllCourses } from './get-all-courses.handler';
 import { listAllCourses } from './list-courses.handler';
+import { removeCourseLecture } from './remove-course-lecture.handler';
+import { removeCourseSubject } from './remove-course-subject.handler';
 import { removeCourseTopic } from './remove-course-topic.handler';
+import { removeCourse } from './remove-course.handler';
 import { updateCourseMetadata } from './update-course.handler';
 import { updateLecture } from './update-lecture.handler';
 import { updateSubject } from './update-subject.handler';
@@ -18,10 +21,13 @@ export const CourseHandler = {
   updateCourseMetadata,
   addTopic,
   updateTopic,
-  removeCourseTopic,
+  removeCourse,
   addSubject,
   addLecture,
   updateSubject,
   updateLecture,
   getAllCourses,
+  removeCourseSubject,
+  removeCourseTopic,
+  removeCourseLecture,
 };

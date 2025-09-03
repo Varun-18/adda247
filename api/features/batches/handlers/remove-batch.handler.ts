@@ -3,29 +3,25 @@ import { Response } from 'express';
 import { Types } from 'mongoose';
 import { ResponseHandler, STATUS_CODES } from 'shared';
 import { RESPONSE_MESSAGES } from '../constant';
-import { CourseService } from '../services';
+import { BatchService } from '../services';
 
-export const removeCourseTopic = async (req: AuthRequest, res: Response) => {
-  const courseService = CourseService();
+export const removeBatch = async (req: AuthRequest, res: Response) => {
+  const batchService = BatchService();
   try {
-    const { courseId, subjectId, topicId } = req.body;
-    const course = await courseService.findOne({
-      _id: new Types.ObjectId(courseId),
+    const { batchId } = req.body;
+    const batch = await batchService.findOne({
+      _id: new Types.ObjectId(batchId),
     });
 
-    if (course === null) {
+    if (batch === null) {
       return ResponseHandler.error(
         res,
-        RESPONSE_MESSAGES.COURSE_NOT_FOUND,
+        RESPONSE_MESSAGES.BATCH_NOT_FOUND,
         STATUS_CODES.NOT_FOUND
       );
     }
 
-    const deleted = await courseService.removeTopic(
-      courseId,
-      subjectId,
-      topicId
-    );
+    const deleted = await batchService.delete(batchId);
 
     return ResponseHandler.success(
       res,

@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import * as yup from 'yup';
 
-export const removeTopicDto = yup.object({
+export const removeSubjectDto = yup.object({
   body: yup.object({
     courseId: yup
       .string()
@@ -13,13 +13,6 @@ export const removeTopicDto = yup.object({
     subjectId: yup
       .string()
       .required('Subject ID is required')
-      .test('is-objectid', 'Invalid MongoDB ObjectId', (value) =>
-        Types.ObjectId.isValid(value)
-      ),
-
-    topicId: yup
-      .string()
-      .required('Topic ID is required')
       .test('is-objectid', 'Invalid MongoDB ObjectId', (value) =>
         Types.ObjectId.isValid(value)
       ),

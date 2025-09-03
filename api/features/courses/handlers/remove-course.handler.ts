@@ -5,10 +5,10 @@ import { ResponseHandler, STATUS_CODES } from 'shared';
 import { RESPONSE_MESSAGES } from '../constant';
 import { CourseService } from '../services';
 
-export const removeCourseTopic = async (req: AuthRequest, res: Response) => {
+export const removeCourse = async (req: AuthRequest, res: Response) => {
   const courseService = CourseService();
   try {
-    const { courseId, subjectId, topicId } = req.body;
+    const { courseId } = req.body;
     const course = await courseService.findOne({
       _id: new Types.ObjectId(courseId),
     });
@@ -21,11 +21,7 @@ export const removeCourseTopic = async (req: AuthRequest, res: Response) => {
       );
     }
 
-    const deleted = await courseService.removeTopic(
-      courseId,
-      subjectId,
-      topicId
-    );
+    const deleted = await courseService.delete(courseId);
 
     return ResponseHandler.success(
       res,

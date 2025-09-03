@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticateUser, schemaValidator } from 'shared';
 import { BatchHandler } from '../handlers';
-import { createBatchDto } from '../dto';
+import { createBatchDto, removeBatchDto } from '../dto';
 
 const batchRouter = Router();
 
@@ -11,6 +11,12 @@ batchRouter.post(
   '/create',
   schemaValidator(createBatchDto),
   BatchHandler.createBatch
+);
+
+batchRouter.post(
+  '/delete/batch',
+  schemaValidator(removeBatchDto),
+  BatchHandler.removeBatch
 );
 
 batchRouter.post('/complete/lecture', BatchHandler.markLectureCompleted);
