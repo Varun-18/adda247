@@ -25,6 +25,7 @@ export interface SubjectEntity {
 export interface TopicEntity {
   _id: ObjectId;
   title: string;
+  hours: number;
   description?: string;
   order: number;
   lectures: LectureEntity[];

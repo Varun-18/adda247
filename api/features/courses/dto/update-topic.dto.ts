@@ -36,6 +36,11 @@ export const updateTopicDto = yup.object({
       .max(500, 'Topic description cannot exceed 500 characters')
       .optional(),
 
+    estimatedHours: yup
+      .number()
+      .required('hours is required')
+      .min(1, 'hours must be at least 1'),
+
     order: yup.number().min(1, 'Order must be at least 1').optional(),
   }),
 });

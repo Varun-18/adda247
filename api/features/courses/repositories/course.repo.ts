@@ -79,12 +79,16 @@ export const createCourseRepository = () => {
     title,
     description,
     order,
+    hours,
+    lectures,
   }: {
     courseId: string;
     subjectId: string;
     title: string;
     description: string;
     order: number;
+    hours: number;
+    lectures: unknown[];
   }) => {
     return await CourseModel.updateOne(
       { _id: courseId, 'subjects._id': subjectId },
@@ -95,7 +99,8 @@ export const createCourseRepository = () => {
             title,
             description,
             order,
-            lectures: [],
+            hours,
+            lectures,
           },
         },
       }

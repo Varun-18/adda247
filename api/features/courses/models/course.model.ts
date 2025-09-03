@@ -48,6 +48,11 @@ const createCourseSchema = () => {
         trim: true,
         maxlength: [200, 'Topic title cannot exceed 200 characters'],
       },
+      hours: {
+        type: Number,
+        required: true,
+        min: [1, 'Topic hours must be at least 1'],
+      },
       description: {
         type: String,
         trim: true,

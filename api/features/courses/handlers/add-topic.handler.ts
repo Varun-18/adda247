@@ -8,7 +8,14 @@ import { CourseService } from '../services';
 export const addTopic = async (req: AuthRequest, res: Response) => {
   const courseService = CourseService();
   try {
-    const { courseId, subjectId, title, description, order } = req.body;
+    const {
+      courseId,
+      subjectId,
+      title,
+      description,
+      order,
+      estimatedHours: hours,
+    } = req.body;
 
     const course = await courseService.findOne({
       _id: new Types.ObjectId(courseId),
@@ -22,12 +29,13 @@ export const addTopic = async (req: AuthRequest, res: Response) => {
       );
     }
 
-    const updatedCourse = await courseService.addTopic({
+    const updatedCourse = await courseService.addTopicWithLectures({
       courseId,
       subjectId,
       title,
       description,
       order,
+      hours,
     });
 
     return ResponseHandler.success(
