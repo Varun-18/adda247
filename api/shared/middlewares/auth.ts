@@ -37,6 +37,6 @@ export const authenticateUser = async (
     next();
   } catch (error) {
     console.log('🚀 ~ authenticateUser ~ error:', error);
-    res.status(STATUS_CODES.BAD_REQUEST).json(error);
+    res.status(STATUS_CODES.UNAUTHORIZED).json(error);
   }
 };
